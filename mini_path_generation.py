@@ -18,7 +18,8 @@ file.close()
 
 
 gen_size=int(input("Enter the gen size"))
-iter_no=int(input("Enter number of iterations"))
+c_prob=float(input("Enter number of cross-over probability"))
+m_prob=float(input("Enter mutation probability"))
 lent=np.size(mat)
 vc=gm.Obj(random.randrange(1,lent+1))
 l=vc.minipath(mat,lent,gen_size)
@@ -32,7 +33,7 @@ print(val)
 while val<2*np.size(mat):
     col=[]
     print(i)
-    for pairs in L.generation(mat, L.parents(mat)):
+    for pairs in L.generation(mat,L.list,c_prob,m_prob):
         x,y=pairs
         col.append(x)
         col.append(y)

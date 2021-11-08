@@ -1,5 +1,6 @@
 import numpy as np
 import math
+import random
 import mutation_mod as mp
 from crossover_mod import cross_over
 from crossover_mod import is_path
@@ -82,19 +83,31 @@ class Batch:
                 maxim=i.fit_cof(mat)
                 maxl=i
         return(maxl.path)
-    def parents(self,mat):
+    def parents(self,mat,c_prob):
         com=self.fit_enough(mat)
         fun= lambda l: (com,l)
-        par=list(map(fun,self.list))
-        return par
-    def generation(self,mat,pars):
-        dauts=list(map(cross_over,pars))
-        i=0
-        for tup in dauts:
-            x,y=tup
-            tup=(mp.mutate(x, mat),mp.mutate(y, mat))
-            dauts[i]=tup
-            i+=1
+        lis=[i for i in random.sample(self.list, math.floor(c_prob*len(self.list))) if i!=com]
+        parted_l=[i for i in self.list if i not in lis]
+        par=list(map(fun,lis))
+        return parted_l,par
+    def generation(self,mat,net,c_prob,m_prob):
+        net=Batch(net)
+        rem,pars=net.parents(mat, c_prob)
+        dauts1=list(map(cross_over,pars))
+        dauts2=[]
+        if len(rem)%2 ==0:
+            for i in range(int(len(rem)/2)):
+                dauts2.append((rem[i],rem[i+int(len(rem)/2)]))
+        else:
+            for i in range(int((len(rem)-1)/2)):
+                dauts2.append((rem[i],rem[i+int((len(rem)-1)/2)]))
+            dauts2.append((rem[len(rem)-1],net.fit_enough(mat)))
+        dauts=dauts1+dauts2
+        to_mut=math.floor(len(dauts)*m_prob)
+        rand_range=random.sample(list(range(len(dauts))), to_mut)
+        for i in rand_range:
+            x,y=dauts[i]
+            dauts[i]=(mp.mutate(x, mat),mp.mutate(y, mat))
         return dauts
 
         
