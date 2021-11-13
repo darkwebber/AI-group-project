@@ -38,7 +38,7 @@ class Fit:
         return dis
     def span(self,mat):
         pos=self.path[0]
-        test=[i for i in self.path if i!=pos]
+        test=[i for i in set(self.path) if i!=pos]
         x= lambda posi : self.dist(mat,pos,posi)
         res=list(map(x,test))
         return sum(res)
@@ -54,8 +54,10 @@ class Fit:
     def stupidity(self):
         non_unique=list(set([i for i in self.path if self.path.count(i)!=1]))
         no_nonun=len(non_unique)
+        if no_nonun==0:
+            return 0
         spread_reps=list(map(self.fspread,list(map(self.path.count,non_unique))))
-        return 5*(sum(spread_reps))+3*(no_nonun)
+        return (sum(spread_reps))/(no_nonun)
     def completeness(self,mat):
         tot= list(range(1,np.size(mat)+1))
         scr=0
@@ -67,13 +69,14 @@ class Fit:
         else:
             return scr
     def fit_cof(self,mat):
-        fit_coeff=self.span(mat)/(self.leng(mat) * self.stupidity())
+        fun=lambda x : x/(x+1)
+        fit_coeff=((fun(self.span(mat)/self.leng(mat))-fun(self.stupidity())))
         return fit_coeff+(np.size(mat)*is_path(self.path, mat))+self.completeness(mat)
 class Batch:
     def __init__(self,l):
         self.list=l
     def fit_enough(self,mat):
-        lst=self.list
+        lst=[i for i in self.list if len(i)>=np.size(mat)]
         tops=[]
         maxim=Fit(lst[0]).fit_cof(mat)
         maxl=Fit(lst[0])

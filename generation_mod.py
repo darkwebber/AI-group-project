@@ -35,6 +35,9 @@ class Obj:
             if self.cord(mat)[0]==0 or self.cord(mat)[1] == 0 or self.cord(mat)[1]==np.shape(mat)[1]-1 or self.cord(mat)[0]==np.shape(mat)[0]-1:
                 if i<lent:
                     k=random.choice(self.nbour(mat))
+                    if i>1:
+                        while k == mini[len(mini)-2]:
+                            k=random.choice(self.nbour(mat))
                     self=Obj(k)
                     mini.append(k)
                     return self.mpath(mat,lent , mini,i+1)
@@ -43,9 +46,15 @@ class Obj:
                     return mini
                 if i>lent:
                     self=Obj(mini[0])
-                    return mini
+                    return None
             #print(f'func {mini} fini')
-            mini.append(random.choice(self.nbour(mat)))
+            if i==1:
+                mini.append(random.choice(self.nbour(mat)))
+            if i>1:
+                k=random.choice(self.nbour(mat))
+                while k == mini[len(mini)-2]:
+                    k=random.choice(self.nbour(mat))
+                mini.append(k)
             #print(f'func {mini} inipini')
             self=Obj(mini[len(mini)-1])
             return self.mpath(mat,lent,mini,i+1)

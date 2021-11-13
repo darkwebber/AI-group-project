@@ -30,7 +30,7 @@ L=sm.Batch(l)
 i=1
 val=sm.Fit(L.fit_enough(mat)).fit_cof(mat)
 print(val)
-while val<2*np.size(mat):
+while val<2*np.size(mat)+int(np.size(mat)/3)-0.25:
     col=[]
     print(i)
     for pairs in L.generation(mat,L.list,c_prob,m_prob):
@@ -40,8 +40,11 @@ while val<2*np.size(mat):
     test.timSort(col,mat)
     col=col[:gen_size]
     L=sm.Batch(col)
+    print((sm.Fit(L.fit_enough(mat)).path))
     val=sm.Fit(L.fit_enough(mat)).fit_cof(mat)
     print(val)
     i+=1
+print(len(L.fit_enough(mat)))
+print(is_path(L.fit_enough(mat),mat))
 print(L.fit_enough(mat))
 print(sm.Fit(L.fit_enough(mat)).fit_cof(mat))

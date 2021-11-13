@@ -1,7 +1,7 @@
 import random
 import generation_mod as gm
 def mutate(l,mat):
-    b_point=random.randint(0, len(l)-1)
+    b_point=random.randint(1, len(l)-1)
     t_obj1=gm.Obj(l[b_point-1])
     if b_point!=len(l)-1:
         t_obj2=gm.Obj(l[b_point+1])
